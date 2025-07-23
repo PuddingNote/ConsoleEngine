@@ -1,6 +1,6 @@
-#include "Engine.h"
 #include <iostream>
-
+#include "Engine.h"
+#include "Level/Level.h"
 
 Engine::Engine()
 {
@@ -8,6 +8,11 @@ Engine::Engine()
 
 Engine::~Engine()
 {
+	if (mainLevel != nullptr)
+	{
+		delete mainLevel;
+		mainLevel = nullptr;
+	}
 }
 
 void Engine::Run()
@@ -23,7 +28,7 @@ void Engine::Run()
 	LARGE_INTEGER frequency;
 	QueryPerformanceFrequency(&frequency);
 
-	float targetFrameRate = 60.0f;	// 타겟 프레임
+	float targetFrameRate = 60.0f;					// 타겟 프레임
 	float oneFrameTime = 1.0f / targetFrameRate;	// 타겟 한 프레임 시간
 
 	while (true)
@@ -43,11 +48,18 @@ void Engine::Run()
 		// 고정프레임
 		if (deltaTime >= oneFrameTime) 
 		{
-			Update(deltaTime);
+			BeginPlay();
+			Tick(deltaTime);
 			Render();
 
 			// 시간 업데이트
 			previousTime = currentTime;
+		
+			// 현재 프레임의 입력을 기록
+			for (int i = 0; i < 255; ++i)
+			{
+				keyStates[i].previousKeyDown = keyStates[i].isKeyDown;
+			}
 		}
 	}
 }
@@ -57,25 +69,94 @@ void Engine::Quit()
 	isQuit = true;
 }
 
+bool Engine::GetKey(int keyCode)
+{
+	return keyStates[keyCode].isKeyDown;
+}
+
+bool Engine::GetKeyDown(int keyCode)
+{
+	return !keyStates[keyCode].previousKeyDown 
+		&& keyStates[keyCode].isKeyDown;
+}
+
+bool Engine::GetKeyUp(int keyCode)
+{
+	return keyStates[keyCode].previousKeyDown
+		&& !keyStates[keyCode].isKeyDown;
+}
+
+void Engine::AddLevel(Level* newLevel)
+{
+	if (mainLevel != nullptr)
+	{
+		delete mainLevel;
+	}
+
+	mainLevel = newLevel;
+}
+
 void Engine::ProcessInput()
 {
+	// 키 입력 확인
+	for (int i = 0; i < 255; ++i)
+	{
+		keyStates[i].isKeyDown = GetAsyncKeyState(i) & 0x8000;
+	}
+
 	// ESC키 눌림 확인
 	// 0x8000 : 이전에 누른 적이 없고 호출 시점에는 눌려있는 상태
-	if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) 
+	/*if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) 
+	{
+		Quit();
+	}*/
+}
+
+void Engine::BeginPlay()
+{
+	if (mainLevel != nullptr)
+	{
+		mainLevel->BeginPlay();
+	}
+}
+
+void Engine::Tick(float deltaTime)
+{
+	/*std::cout
+		<< "DeltaTime: " << deltaTime
+		<< ", FPS: " << (1.0f / deltaTime)
+		<< "\n";
+	*/
+
+	/*if (GetKeyDown('A'))
+	{
+		std::cout << "KeyDown\n";
+	}
+	if (GetKey('A'))
+	{
+		std::cout << "Key\n";
+	}
+	if (GetKeyUp('A'))
+	{
+		std::cout << "KeyUp\n";
+	}*/
+
+	// 레벨 업데이트
+	if (mainLevel != nullptr)
+	{
+		mainLevel->Tick(deltaTime);
+	}
+
+	if (GetKeyDown(VK_ESCAPE))
 	{
 		Quit();
 	}
 }
 
-void Engine::Update(float deltaTime)
-{
-	std::cout
-		<< "DeltaTime: " << deltaTime
-		<< ", FPS: " << (1.0f / deltaTime)
-		<< "\n";
-}
-
 void Engine::Render()
 {
-
+	if (mainLevel != nullptr)
+	{
+		mainLevel->Render();
+	}
 }

@@ -18,9 +18,11 @@ public:
 	static Vector2 Up;
 	static Vector2 Right;
 
-private:
+public:
 	int x = 0;
 	int y = 0;
+	
+private:
 	char* buffer = nullptr;
 
 };
