@@ -38,6 +38,9 @@ public:
 	}
 };
 
+// 타입 정보 관련 함수와 멤버들을 클래스에 선언
+// 클래스에 런타임 타입 정보를 부여하는 매크로
+// 사용자 정의 타입 ID를 정적 멤버로 생성해서 객체 타입 확인
 #define RTTI_DECLARATIONS(Type, ParentType)												\
 public:																					\
 	using super = ParentType;															\

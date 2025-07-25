@@ -32,6 +32,8 @@ public:
 	
 	void AddLevel(Level* newLevel);
 
+	static Engine& Get();
+
 private:
 	void ProcessInput();
 	void BeginPlay();
@@ -46,4 +48,7 @@ private:
 
 	// ¸ÞÀÎ ·¹º§
 	Level* mainLevel = nullptr;
+
+	// ½Ì±ÛÅæ º¯¼ö
+	static Engine* instance;
 };

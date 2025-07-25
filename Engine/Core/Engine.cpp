@@ -1,9 +1,21 @@
 #include <iostream>
 #include "Engine.h"
 #include "Level/Level.h"
+#include <Windows.h>
+
+// 정적 변수 호기화
+Engine* Engine::instance = nullptr;
 
 Engine::Engine()
 {
+	instance = this;
+
+	CONSOLE_CURSOR_INFO info;
+	info.bVisible = false;
+	info.dwSize = 1;
+
+	SetConsoleCursorInfo(GetStdHandle(STD_OUTPUT_HANDLE), &info);
+	
 }
 
 Engine::~Engine()
@@ -62,6 +74,13 @@ void Engine::Run()
 			}
 		}
 	}
+
+	// 정리 (게임 종료시 실행)
+	
+
+
+	// 모든 텍스트 색상 변경
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
 }
 
 void Engine::Quit()
@@ -94,6 +113,11 @@ void Engine::AddLevel(Level* newLevel)
 	}
 
 	mainLevel = newLevel;
+}
+
+Engine& Engine::Get()
+{
+	return *instance;
 }
 
 void Engine::ProcessInput()
@@ -147,14 +171,16 @@ void Engine::Tick(float deltaTime)
 		mainLevel->Tick(deltaTime);
 	}
 
-	if (GetKeyDown(VK_ESCAPE))
-	{
-		Quit();
-	}
+	//if (GetKeyDown(VK_ESCAPE))
+	//{
+	//	Quit();
+	//}
 }
 
 void Engine::Render()
 {
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
+
 	if (mainLevel != nullptr)
 	{
 		mainLevel->Render();
