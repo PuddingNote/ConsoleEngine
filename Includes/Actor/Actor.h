@@ -22,7 +22,11 @@ class Engine_API Actor : public RTTI
 	RTTI_DECLARATIONS(Actor, RTTI)
 
 public:
-	Actor(const char image = ' ', Color color = Color::White);
+	Actor(
+		const char image = ' ',
+		Color color = Color::White,
+		const Vector2& position = Vector2::Zero
+	);
 	virtual ~Actor();
 
 	// 이벤트 함수
@@ -37,10 +41,10 @@ public:
 	Vector2 Position() const;
 
 private:
-	Vector2 position;
+	Vector2 position;	// 개체의 위치
 	
-	char image = ' ';
-	Color color;
+	char image = ' ';	
+	Color color;		
 
 	bool hasBeganPlay = false;
 };

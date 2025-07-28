@@ -2,7 +2,7 @@
 #include <Windows.h>
 #include <iostream>
 
-Actor::Actor(const char image, Color color) : image(image), color(color)
+Actor::Actor(const char image, Color color, const Vector2& position) : image(image), color(color), position(position)
 {
 
 }
@@ -32,9 +32,11 @@ void Actor::Render()
 	COORD coord;
 	coord.X = (short)position.x;
 	coord.Y = (short)position.y;
-	SetConsoleCursorPosition(handle, coord);
 
 	// 커서 이동
+	SetConsoleCursorPosition(handle, coord);
+
+	// 색상 설정
 	SetConsoleTextAttribute(handle, (WORD)color);
 
 	// 그리기

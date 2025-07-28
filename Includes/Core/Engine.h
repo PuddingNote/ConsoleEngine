@@ -4,9 +4,8 @@
 #include <Windows.h>
 
 /*
-* Todo: 2025년 7월 24일
-* RTTI 적용
-* Engine 싱글톤(Singleton) 구현
+* Todo: 2025년 7월 28일
+* 맵 로드를 위한 파일 테스트 코드 추가
 * 
 */
 
