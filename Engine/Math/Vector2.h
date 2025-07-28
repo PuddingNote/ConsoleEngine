@@ -10,6 +10,7 @@ public:
 
 	Vector2 operator+(const Vector2& other) const;
 	Vector2 operator-(const Vector2& other) const;
+	bool operator==(const Vector2& other) const;
 
 	const char* ToString();
 

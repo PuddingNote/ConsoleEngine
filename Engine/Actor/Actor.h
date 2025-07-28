@@ -19,6 +19,7 @@ enum class Color : int
 // 엔진의 이벤트 함수 호출 (BeginPlay, Tick, Draw)
 class Engine_API Actor : public RTTI
 {
+	friend class Level;
 	RTTI_DECLARATIONS(Actor, RTTI)
 
 public:
@@ -40,11 +41,16 @@ public:
 	void SetPosition(const Vector2& newPosition);
 	Vector2 Position() const;
 
-private:
-	Vector2 position;	// 개체의 위치
-	
-	char image = ' ';	
-	Color color;		
+	// Sorting Order 설정
+	void SetSortingOrder(unsigned int sortingOrder);
 
-	bool hasBeganPlay = false;
+private:
+	Vector2 position;				// 개체의 위치
+	
+	char image = ' ';				// 그릴 값
+	Color color;					// 텍스트 색상 값
+
+	bool hasBeganPlay = false;		// BeginPlay 호출 확인
+
+	unsigned int sortingOrder = 0;	// 정렬 순서
 };

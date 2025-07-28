@@ -75,10 +75,14 @@ void SokobanLevel::ReadMapFile(const char* filename)
 			//std::cout << '.';
 			break;
 		case 'p':
+			AddActor(new Ground(position));
+
 			AddActor(new Player(position));
 			//std::cout << 'p';
 			break;
 		case 'b':
+			AddActor(new Ground(position));
+
 			AddActor(new Box(position));
 			//std::cout << 'b';
 			break;
