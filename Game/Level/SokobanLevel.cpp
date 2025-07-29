@@ -6,12 +6,27 @@
 #include "Actor/Ground.h"
 #include "Actor/Box.h"
 #include "Actor/Target.h"
+#include "Utils/Utils.h"
 
 #include <iostream>
 
 SokobanLevel::SokobanLevel()
 {
-	ReadMapFile("Map.txt");
+	//ReadMapFile("Map.txt");
+	ReadMapFile("Stage1.txt");
+}
+
+void SokobanLevel::Render()
+{
+	super::Render();
+
+	if (isGameClear)
+	{
+		Utils::SetConsolePosition({ 30, 0 });
+		Utils::SetConsoleTextColor(static_cast<WORD>(Color::White));
+
+		std::cout << "Game Clear!";
+	}
 }
 
 void SokobanLevel::ReadMapFile(const char* filename)
@@ -66,6 +81,7 @@ void SokobanLevel::ReadMapFile(const char* filename)
 		switch (mapCharacter)
 		{
 		case '#':
+		case '1':
 			AddActor(new Wall(position));
 			//std::cout << '#';
 			break;
@@ -195,30 +211,30 @@ bool SokobanLevel::CanPlayerMove(const Vector2& playerPosition, const Vector2& t
 				// 플레이어 이동 못함
 				return false;
 			}
+		}
 
-			for (Actor* const actor : actors)
+		for (Actor* const actor : actors)
+		{
+			if (actor->Position() == nextPosition)
 			{
-				if (actor->Position() == nextPosition)
+				// 2. 박스는 없지만 벽이 있지 않은지 확인
+				if (actor->As<Wall>())
 				{
-					// 2. 박스는 없지만 벽이 있지 않은지 확인
-					if (actor->As<Wall>())
-					{
-						// 플레이어 이동 X
-						return false;
-					}
+					// 플레이어 이동 X
+					return false;
+				}
 
-					// 3. 이동 가능한 경우 (그라운드, 타겟)에는 박스 이동 처리
-					if (actor->As<Ground>() || actor->As<Target>())
-					{
-						// 박스 이동 처리
-						searchedBox->SetPosition(nextPosition);
+				// 3. 이동 가능한 경우 (그라운드, 타겟)에는 박스 이동 처리
+				if (actor->As<Ground>() || actor->As<Target>())
+				{
+					// 박스 이동 처리
+					searchedBox->SetPosition(nextPosition);
 
-						// 게임 클리어 여부 확인
-						isGameClear = CheckGameClear();
+					// 게임 클리어 여부 확인
+					//isGameClear = CheckGameClear();
 
-						// 플레이어 이동 가능
-						return true;
-					}
+					// 플레이어 이동 가능
+					return true;
 				}
 			}
 		}

@@ -9,11 +9,11 @@ class Engine_API Engine
 {
 public:
 	Engine();
-	~Engine();
+	virtual ~Engine();
 
-	void Run();		// 
-	void Quit();	// 종료 함수
-	void CleanUp();	// 메모리 해제 함수
+	void Run();				// 엔진 실행 함수
+	void Quit();			// 종료 함수
+	virtual void CleanUp();	// 메모리 해제 함수
 
 	void AddLevel(Level* newLevel);
 
@@ -24,7 +24,7 @@ private:
 	void Tick(float deltaTime = 0.0f);	// Update()
 	void Render();
 
-private:
+protected:
 	bool isQuit = false;		// 엔진 종료 플래그
 
 	Level* mainLevel = nullptr;	// 메인 레벨

@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "Engine.h"
+#include "Game/Game.h"
 #include "Input.h"
 #include "Level/Level.h"
 #include "Interface/ICanPlayerMove.h"
@@ -35,7 +36,9 @@ void Player::Tick(float deltaTime)
 	if (Input::Get().GetKeyDown(VK_ESCAPE))
 	{
 		//Engine::Get().Quit();
-		QuitGame();
+		//QuitGame();
+
+		Game::Get().ToggleMenu();
 		return;
 	}
 

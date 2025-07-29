@@ -10,6 +10,8 @@ class SokobanLevel : public Level, public ICanPlayerMove
 public:
 	SokobanLevel();
 
+	virtual void Render() override;
+
 	// ICanPlayerMove을(를) 통해 상속됨
 	virtual bool CanPlayerMove(const Vector2& playerPosition, const Vector2& targetPosition) override;
 
