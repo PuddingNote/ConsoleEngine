@@ -13,10 +13,7 @@ enum class Color : int
 	Intensity = 8
 };
 
-// 물체가 뭘 해야할지 정의
-// 위치 점령
-// 콘솔 창에 그리기 (How? What?)
-// 엔진의 이벤트 함수 호출 (BeginPlay, Tick, Draw)
+class Level;
 class Engine_API Actor : public RTTI
 {
 	friend class Level;
@@ -44,6 +41,13 @@ public:
 	// Sorting Order 설정
 	void SetSortingOrder(unsigned int sortingOrder);
 
+	// Ownership 설정
+	void SetOwner(Level* newOwner);
+	Level* GetOwner();
+
+	// 게임 종료 요청 함수
+	void QuitGame();
+
 private:
 	Vector2 position;				// 개체의 위치
 	
@@ -53,4 +57,6 @@ private:
 	bool hasBeganPlay = false;		// BeginPlay 호출 확인
 
 	unsigned int sortingOrder = 0;	// 정렬 순서
+
+	Level* owner = nullptr;			// 소유 레벨
 };

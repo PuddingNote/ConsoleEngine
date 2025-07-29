@@ -100,3 +100,8 @@ void SokobanLevel::ReadMapFile(const char* filename)
 
 	fclose(file);
 }
+
+bool SokobanLevel::CanPlayerMove(const Vector2& playerPosition, const Vector2& targetPosition)
+{
+	return false;
+}
