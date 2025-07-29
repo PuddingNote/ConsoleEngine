@@ -42,7 +42,7 @@ void Player::Tick(float deltaTime)
 	// 입력처리 (이동 가능 여부 판단 후 이동)
 	if (Input::Get().GetKeyDown(VK_LEFT))
 	{
-		bool canMove = canPlayerMoveInterface->CanPlayerMove(Position(), Vector2(Position().x + 1, Position().y));
+		bool canMove = canPlayerMoveInterface->CanPlayerMove(Position(), Vector2(Position().x - 1, Position().y));
 		if (canMove)
 		{
 			Vector2 position = Position();
@@ -52,21 +52,33 @@ void Player::Tick(float deltaTime)
 	}
 	if (Input::Get().GetKeyDown(VK_RIGHT))
 	{
-		Vector2 position = Position();
-		position.x += 1;
-		SetPosition(position);
+		bool canMove = canPlayerMoveInterface->CanPlayerMove(Position(), Vector2(Position().x + 1, Position().y));
+		if (canMove)
+		{
+			Vector2 position = Position();
+			position.x += 1;
+			SetPosition(position);
+		}
 	}
 	if (Input::Get().GetKeyDown(VK_UP))
 	{
-		Vector2 position = Position();
-		position.y -= 1;
-		SetPosition(position);
+		bool canMove = canPlayerMoveInterface->CanPlayerMove(Position(), Vector2(Position().x, Position().y - 1));
+		if (canMove)
+		{
+			Vector2 position = Position();
+			position.y -= 1;
+			SetPosition(position);
+		}
 	}
 	if (Input::Get().GetKeyDown(VK_DOWN))
 	{
-		Vector2 position = Position();
-		position.y += 1;
-		SetPosition(position);
+		bool canMove = canPlayerMoveInterface->CanPlayerMove(Position(), Vector2(Position().x, Position().y + 1));
+		if (canMove)
+		{
+			Vector2 position = Position();
+			position.y += 1;
+			SetPosition(position);
+		}
 	}
 
 }
