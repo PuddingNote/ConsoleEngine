@@ -1,7 +1,8 @@
 #include <iostream>
+#include <Windows.h>
+
 #include "Engine.h"
 #include "Level/Level.h"
-#include <Windows.h>
 #include "Utils/Utils.h"
 
 // 정적 변수 호기화
@@ -31,6 +32,9 @@ Engine::Engine()
 	
 	// 콘솔 창 이벤트 등록
 	SetConsoleCtrlHandler(ConsoleMessageProcedure, TRUE);
+	
+	// 엔진 설정 로드
+	LoadEngineSettings();
 }
 
 Engine::~Engine()
@@ -51,7 +55,8 @@ void Engine::Run()
 	LARGE_INTEGER frequency;
 	QueryPerformanceFrequency(&frequency);
 
-	float targetFrameRate = 60.0f;					// 타겟 프레임
+	// 타겟 프레임
+	float targetFrameRate = (settings.framerate == 0.0f) ? 60.0f : settings.framerate;
 	float oneFrameTime = 1.0f / targetFrameRate;	// 타겟 한 프레임 시간
 
 	while (true)
@@ -74,6 +79,11 @@ void Engine::Run()
 			BeginPlay();
 			Tick(deltaTime);
 			Render();
+
+			//// 제목에 FPS 출력
+			//char title[50] = {};
+			//sprintf_s(title, 50, "FPS: %f", (1.0f / deltaTime));
+			//SetConsoleTitleA(title);
 
 			// 시간 업데이트
 			previousTime = currentTime;
@@ -173,4 +183,62 @@ void Engine::Render()
 	{
 		mainLevel->Render();
 	}
+}
+
+void Engine::LoadEngineSettings()
+{
+	FILE* file = nullptr;
+	fopen_s(&file, "../Settings/EngineSettings.txt", "rt");
+	if (file == nullptr)
+	{
+		std::cout << "Failed to load engine settings.\n";
+		__debugbreak();
+		return;
+	}
+
+	// 로드
+	fseek(file, 0, SEEK_END);		// File Position 포인터를 가장 뒤로
+	size_t fileSize = ftell(file);	// 이 위치 구하기
+	rewind(file);					// 다시 첫 위치로 되돌리기
+
+	// 파일 내용을 저장할 버퍼 할당 후 내용 읽기
+	char* buffer = new char[fileSize + 1];
+	memset(buffer, 0, fileSize + 1);
+	size_t readSize = fread(buffer, sizeof(char), fileSize, file);
+
+	// 데이터 파싱
+	char* context = nullptr;
+	char* token = nullptr;
+	token = strtok_s(buffer, "\n", &context);
+	while (token != nullptr)
+	{
+		// 키/값 분리
+		char header[10] = {};
+
+		// 아래 구문이 제대로 동작하려면 빈칸이 있어야함
+		sscanf_s(token, "%s", header, 10);
+
+		// 헤더 문자열 비교
+		if (strcmp(header, "framerate") == 0)
+		{
+			sscanf_s(token, "framerate = %f", &settings.framerate);
+		}
+		else if (strcmp(header, "width") == 0)
+		{
+			sscanf_s(token, "width = %d", &settings.width);
+		}
+		else if (strcmp(header, "height") == 0)
+		{
+			sscanf_s(token, "height = %d", &settings.height);
+		}
+
+		// 그 다음줄 분리
+		token = strtok_s(nullptr, "\n", &context);
+
+	}
+
+	SafeDeleteArray(buffer);		// 버퍼 해제
+	fclose(file);					// 파일 닫기
+
+
 }
